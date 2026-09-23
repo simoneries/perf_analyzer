@@ -38,9 +38,16 @@ df_expanded = pd.concat([expanded_column,df_user],axis=1)
 
 df_clean = df_expanded[['pk_account','username','is_verified','pk', 'taken_at', 'media_type', 'location',
        'is_paid_partnership', 'is_affiliate', 'like_count', 'comment_count',
-       'play_count']]
+       'play_count']].copy()
+
+scraping_datetime = datetime.datetime.now()
+
+df_clean["scraping_time"]=scraping_datetime
+
 
 df_clean.to_csv("test.csv")
+
+
 
 
 #daily updates of the database
