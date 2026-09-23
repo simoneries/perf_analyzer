@@ -28,7 +28,7 @@ with open("medias.json","w") as f:
 
 df = pd.read_json("/home/simon/repos/projects/portfolio/perf_analyzer/medias.json",lines=True)
 
-df_user = df[["user","pk","taken_at","media_type","location","is_paid_partnership","is_affiliate","like_count","comment_count","play_count"]].copy()
+df_user = df[["user","pk","taken_at","media_type","location","is_paid_partnership","is_affiliate","caption_text","like_count","comment_count","play_count"]].copy()
 
 expanded_column = pd.json_normalize(df["user"])
 
@@ -37,7 +37,7 @@ expanded_column = expanded_column.rename(columns={"pk":"pk_account"})
 df_expanded = pd.concat([expanded_column,df_user],axis=1)
 
 df_clean = df_expanded[['pk_account','username','is_verified','pk', 'taken_at', 'media_type', 'location',
-       'is_paid_partnership', 'is_affiliate', 'like_count', 'comment_count',
+       'is_paid_partnership', 'is_affiliate', 'caption_text', 'like_count', 'comment_count',
        'play_count']].copy()
 
 scraping_datetime = datetime.datetime.now()
