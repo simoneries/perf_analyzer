@@ -28,6 +28,9 @@ with open("medias.json","w") as f:
 
 df = pd.read_json("/home/simon/repos/projects/portfolio/perf_analyzer/medias.json",lines=True)
 
+df_clean = df[["user","pk","taken_at","media_type","location","is_paid_partnership","is_affiliate","like_count","comment_count","play_count"]]
+
+print(df_clean["like_count"])
 
 #daily updates of the database
 
