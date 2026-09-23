@@ -28,9 +28,20 @@ with open("medias.json","w") as f:
 
 df = pd.read_json("/home/simon/repos/projects/portfolio/perf_analyzer/medias.json",lines=True)
 
-df_clean = df[["user","pk","taken_at","media_type","location","is_paid_partnership","is_affiliate","like_count","comment_count","play_count"]]
+df_user = df[["user","pk","taken_at","media_type","location","is_paid_partnership","is_affiliate","like_count","comment_count","play_count"]].copy()
 
-print(df_clean["like_count"])
+expanded_column = pd.json_normalize(df["user"])
+
+expanded_column = expanded_column.rename(columns={"pk":"pk_account"})
+
+df_expanded = pd.concat([expanded_column,df_user],axis=1)
+
+df_clean = df_expanded[['pk_account','username','is_verified','pk', 'taken_at', 'media_type', 'location',
+       'is_paid_partnership', 'is_affiliate', 'like_count', 'comment_count',
+       'play_count']]
+
+df_clean.to_csv("test.csv")
+
 
 #daily updates of the database
 
