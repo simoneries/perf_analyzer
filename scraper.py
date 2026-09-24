@@ -28,6 +28,7 @@ def get_user_medias(username,comments_amount):
     df_user["pk"] = df["pk"].astype(str)
 
     #get user comments 
+    time.sleep(1)
     df_user["comments"] = [
         [c.model_dump(mode="json") for c in cl.media_comments(pk, amount=comments_amount)]
         for pk in df_user["pk"]
@@ -59,6 +60,16 @@ for user in users :
 df_global_posts = df_global_posts.reset_index(drop=True)
 
 df_global_posts.to_csv("test.csv")
+
+df_c = df_global_posts[["pk","comments"]].explode("comments")
+df_c = df_c.dropna(subset = ["comments"])
+
+df_comments = pd.json_normalize(df_c["comments"].tolist())
+df_comments = df_comments.rename(columns={"pk": "pk_comment"})
+df_comments["pk_post"] = df_c["pk"].to_numpy()
+    
+df_comments.to_csv("test_comments.csv")
+
 
 
 
