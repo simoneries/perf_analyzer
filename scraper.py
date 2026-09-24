@@ -9,7 +9,7 @@ cl = Client()
 
 cl.load_settings("sensitive/session.json")
 
-df_global = pd.DataFrame()
+df_global_posts = pd.DataFrame()
 
 def get_user_medias(username,comments_amount):
     #get user infos for one account --> Get user infos for multiple accounts
@@ -54,9 +54,11 @@ users = ["french.mush","french.mush.it"]
 for user in users : 
     time.sleep(2) #for instagram bot detection
     df_iteration = get_user_medias(user,30)
-    df_global = pd.concat([df_global,df_iteration])
+    df_global_posts = pd.concat([df_global_posts,df_iteration])
 
-df_global.to_csv("test.csv")
+df_global_posts = df_global_posts.reset_index(drop=True)
+
+df_global_posts.to_csv("test.csv")
 
 
 
