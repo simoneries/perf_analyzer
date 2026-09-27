@@ -4,12 +4,18 @@ import pandas as pd
 import numpy as np
 import time
 import datetime
+import random
 
 cl = Client()
 
 cl.load_settings("sensitive/session.json")
 
 df_global_posts = pd.DataFrame()
+
+def get_comments(pk):
+    time.sleep(random.uniform(8, 20))    # pause avant chaque post
+    return [c.model_dump(mode="json")
+            for c in cl.media_comments(pk, amount=comments_amount)]
 
 def get_user_medias(username,comments_amount):
     #get user infos for one account --> Get user infos for multiple accounts
@@ -28,11 +34,8 @@ def get_user_medias(username,comments_amount):
     df_user["pk"] = df["pk"].astype(str)
 
     #get user comments 
-    time.sleep(1)
-    df_user["comments"] = [
-        [c.model_dump(mode="json") for c in cl.media_comments(pk, amount=comments_amount)]
-        for pk in df_user["pk"]
-    ]
+    #time.sleep(random.uniform(8, 20))
+    #df_user["comments"] = [get_comments(pk) for pk in df_user["pk"]]
     #unnest the user infos
     expanded_column = pd.json_normalize(df["user"])
     expanded_column = expanded_column.rename(columns={"pk":"pk_account"})
@@ -40,7 +43,7 @@ def get_user_medias(username,comments_amount):
 
     #get clean df
     df_clean = df_expanded[['pk_account','username','is_verified','pk', 'taken_at', 'media_type', 'crosspost','coauthor_producers','sponsor_tags','location',
-        'is_paid_partnership', 'is_affiliate', 'caption_text', 'like_count', 'comment_count','comments',
+        'is_paid_partnership', 'is_affiliate', 'caption_text', 'like_count', 'comment_count',
         'play_count']].copy()
 
     #get scraping date time
@@ -61,14 +64,14 @@ df_global_posts = df_global_posts.reset_index(drop=True)
 
 df_global_posts.to_csv("test.csv")
 
-df_c = df_global_posts[["pk","comments"]].explode("comments")
+"""df_c = df_global_posts[["pk","comments"]].explode("comments")
 df_c = df_c.dropna(subset = ["comments"])
 
 df_comments = pd.json_normalize(df_c["comments"].tolist())
 df_comments = df_comments.rename(columns={"pk": "pk_comment"})
 df_comments["pk_post"] = df_c["pk"].to_numpy()
     
-df_comments.to_csv("test_comments.csv")
+df_comments.to_csv("test_comments.csv")"""
 
 
 
